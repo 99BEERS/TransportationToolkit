@@ -4,6 +4,12 @@
 #include <iostream>
 #include "HorizontalCurve.h"
 #include "VerticalCurve.h"
+#include "Superelevation.h"
+#include "SightDistance.h"
+#include "CoordinateGeometry.h"
+#include "QuantityCalculations.h"
+#include "CsvImportExport.h"
+#include "Reports.h"
 
 using namespace std;
 
@@ -21,7 +27,13 @@ int main()
 		cout << endl;
 		cout << "1. Horizontal Curve Calculator" << endl;
 		cout << "2. Vertical Curve Calculator" << endl;
-		cout << "3. Exit " << endl;
+		cout << "3. Superelevation" << endl;
+		cout << "4. Sight Distance" << endl;
+		cout << "5. Coordinate Geometry (COGO)" << endl;
+		cout << "6. Quantity Calculations" << endl;
+		cout << "7. CSV Import/Export" << endl;
+		cout << "8. Reports" << endl;
+		cout << "0. Exit" << endl;
 		
 		cout << endl;
 		cout << "Selection: ";
@@ -38,8 +50,50 @@ int main()
 		}
 		case 2:
 		{
-			VerticalCurve hc;
-			hc.Run();
+			VerticalCurve vc;
+			vc.Run();
+
+			break;
+		}
+		case 3:
+		{
+			Superelevation tool;
+			tool.Run();
+
+			break;
+		}
+		case 4:
+		{
+			SightDistance tool;
+			tool.Run();
+
+			break;
+		}
+		case 5:
+		{
+			CoordinateGeometry tool;
+			tool.Run();
+
+			break;
+		}
+		case 6:
+		{
+			QuantityCalculations tool;
+			tool.Run();
+
+			break;
+		}
+		case 7:
+		{
+			CsvImportExport tool;
+			tool.Run();
+
+			break;
+		}
+		case 8:
+		{
+			Reports tool;
+			tool.Run();
 
 			break;
 		}
@@ -61,7 +115,7 @@ int main()
 		}
 		}
 	} 
-		while (choice != 2);
+		while (choice != 0);
 
 	return 0;
 }

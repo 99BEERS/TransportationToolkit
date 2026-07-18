@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -126,11 +126,23 @@
     <ClCompile Include="HorizontalCurve.cpp" />
     <ClCompile Include="VerticalCurve.cpp" />
     <ClCompile Include="TransportationToolkit.cpp" />
+    <ClCompile Include="Superelevation.cpp" />
+    <ClCompile Include="SightDistance.cpp" />
+    <ClCompile Include="CoordinateGeometry.cpp" />
+    <ClCompile Include="QuantityCalculations.cpp" />
+    <ClCompile Include="CsvImportExport.cpp" />
+    <ClCompile Include="Reports.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="HorizontalCurve.h" />
     <ClInclude Include="VerticalCurve.h" />
+    <ClInclude Include="Superelevation.h" />
+    <ClInclude Include="SightDistance.h" />
+    <ClInclude Include="CoordinateGeometry.h" />
+    <ClInclude Include="QuantityCalculations.h" />
+    <ClInclude Include="CsvImportExport.h" />
+    <ClInclude Include="Reports.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
