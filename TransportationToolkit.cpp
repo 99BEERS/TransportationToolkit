@@ -5,7 +5,7 @@
 #include "HorizontalCurve.h"
 #include "VerticalCurve.h"
 #include "Superelevation.h"
-#include "SightDistance.h"
+#include "StoppingSightDistance.h"
 #include "CoordinateGeometry.h"
 #include "QuantityCalculations.h"
 #include "CsvImportExport.h"
@@ -64,7 +64,7 @@ int main()
 		}
 		case 4:
 		{
-			SightDistance tool;
+			StoppingSightDistance tool;
 			tool.Run();
 
 			break;
