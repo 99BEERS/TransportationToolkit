@@ -1,3 +1,26 @@
+# Transportation Engineering Toolkit
+
+A Windows Forms desktop application for common transportation engineering calculations.
+
+Implemented calculators:
+
+- Horizontal curve geometry
+- Symmetric vertical curves
+- Superelevation
+
+The remaining tabs are placeholders for sight distance, coordinate geometry, quantities, CSV import/export, and reports.
+
+## Build and run
+
+Open `TransportationToolkit.sln` in Visual Studio 2022, or run:
+
+```powershell
+dotnet run --project WinFormsPort\TransportationToolkit.csproj
+```
+
+The original native C++ source remains in the repository for reference. The solution now starts the .NET 8 Windows Forms application.
+
+## License
 
 MIT License
 
