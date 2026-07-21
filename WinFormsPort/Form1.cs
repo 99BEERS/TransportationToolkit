@@ -23,7 +23,8 @@ public sealed class Form1 : Form
         tabs.TabPages.Add(HorizontalPage());
         tabs.TabPages.Add(VerticalPage());
         tabs.TabPages.Add(SuperelevationPage());
-        foreach (var title in new[] { "Sight Distance", "Coordinate Geometry", "Quantities", "CSV Import/Export", "Reports" })
+        tabs.TabPages.Add(SightDistancePage());
+        foreach (var title in new[] { "Coordinate Geometry", "Quantities", "CSV Import/Export", "Reports" })
             tabs.TabPages.Add(ComingSoon(title));
         Controls.Add(tabs);
         Controls.Add(header);
@@ -105,6 +106,51 @@ public sealed class Form1 : Form
         });
     }
 
+    private TabPage SightDistancePage()
+    {
+        var speed = Input();
+        var reactionTime = Input("2.5");
+        var friction = Input("0.35");
+        var grade = Input("0");
+        var output = Output();
+
+        return Calculator("Stopping Sight Distance", "Reaction distance plus braking distance",
+            new[] { ("Design speed (km/h)", speed), ("Reaction time (s)", reactionTime),
+                ("Coefficient of friction", friction), ("Road grade (%)", grade) }, output, () =>
+        {
+            if (!Positive(speed, "Design speed", out var s) ||
+                !NonNegative(reactionTime, "Reaction time", out var t) ||
+                !NonNegative(friction, "Coefficient of friction", out var f) ||
+                !Read(grade, "Road grade", out var gradePercent)) return;
+
+            var decimalGrade = gradePercent / 100.0;
+            var brakingFactor = f + decimalGrade;
+            if (brakingFactor <= 0)
+            {
+                MessageBox.Show("Coefficient of friction plus decimal grade must be greater than zero.",
+                    "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                grade.Focus();
+                return;
+            }
+
+            var reactionDistance = 0.278 * s * t;
+            var brakingDistance = s * s / (254.0 * brakingFactor);
+            var stoppingDistance = reactionDistance + brakingDistance;
+
+            output.Text = "FORMULAS AND SUBSTITUTION\r\n" +
+                $"G = {gradePercent:N3}/100 = {decimalGrade:N6}\r\n\r\n" +
+                "Reaction distance = 0.278Vt\r\n" +
+                $"  = 0.278({s:N3})({t:N3})\r\n" +
+                $"  = {reactionDistance:N2} m\r\n\r\n" +
+                "Braking distance = V²/[254(f + G)]\r\n" +
+                $"  = {s:N3}²/[254({f:N3} + {decimalGrade:N6})]\r\n" +
+                $"  = {brakingDistance:N2} m\r\n\r\n" +
+                "STOPPING SIGHT DISTANCE\r\n" +
+                $"SSD = {reactionDistance:N2} + {brakingDistance:N2}\r\n" +
+                $"    = {stoppingDistance:N2} m";
+        });
+    }
+
     private TabPage Calculator(string title, string subtitle, (string label, TextBox input)[] fields, TextBox output, Action calculate)
     {
         var page = new TabPage(title) { BackColor = BackColor, Padding = new Padding(20) };
@@ -130,7 +176,7 @@ public sealed class Form1 : Form
             TextAlign = ContentAlignment.MiddleCenter, Font = new Font("Segoe UI Semibold", 18F), ForeColor = navy }); return page;
     }
 
-    private static TextBox Input() => new() { Width = 300, BorderStyle = BorderStyle.FixedSingle };
+    private static TextBox Input(string text = "") => new() { Text = text, Width = 300, BorderStyle = BorderStyle.FixedSingle };
     private static TextBox Output() => new() { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true,
         BorderStyle = BorderStyle.None, Font = new Font("Consolas", 11F), ScrollBars = ScrollBars.Vertical };
     private static bool Read(TextBox box, string name, out double value)
@@ -142,6 +188,11 @@ public sealed class Form1 : Form
     {
         if (Read(box, name, out value) && value > 0) return true;
         if (double.IsFinite(value)) MessageBox.Show($"{name} must be greater than zero.", "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Warning); return false;
+    }
+    private static bool NonNegative(TextBox box, string name, out double value)
+    {
+        if (Read(box, name, out value) && value >= 0) return true;
+        if (double.IsFinite(value)) MessageBox.Show($"{name} cannot be negative.", "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Warning); return false;
     }
     private static bool Range(TextBox box, string name, double min, double max, out double value)
     {

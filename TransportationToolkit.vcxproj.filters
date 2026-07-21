@@ -27,7 +27,7 @@
     <ClCompile Include="Superelevation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SightDistance.cpp">
+    <ClCompile Include="StoppingSightDistance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CoordinateGeometry.cpp">
@@ -56,7 +56,7 @@
     <ClInclude Include="Superelevation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SightDistance.h">
+    <ClInclude Include="StoppingSightDistance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CoordinateGeometry.h">

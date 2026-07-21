@@ -127,7 +127,7 @@
     <ClCompile Include="VerticalCurve.cpp" />
     <ClCompile Include="TransportationToolkit.cpp" />
     <ClCompile Include="Superelevation.cpp" />
-    <ClCompile Include="SightDistance.cpp" />
+    <ClCompile Include="StoppingSightDistance.cpp" />
     <ClCompile Include="CoordinateGeometry.cpp" />
     <ClCompile Include="QuantityCalculations.cpp" />
     <ClCompile Include="CsvImportExport.cpp" />
@@ -138,7 +138,7 @@
     <ClInclude Include="HorizontalCurve.h" />
     <ClInclude Include="VerticalCurve.h" />
     <ClInclude Include="Superelevation.h" />
-    <ClInclude Include="SightDistance.h" />
+    <ClInclude Include="StoppingSightDistance.h" />
     <ClInclude Include="CoordinateGeometry.h" />
     <ClInclude Include="QuantityCalculations.h" />
     <ClInclude Include="CsvImportExport.h" />
