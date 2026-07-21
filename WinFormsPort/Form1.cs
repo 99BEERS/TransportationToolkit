@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Reflection;
 
 namespace TransportationToolkit;
 
@@ -51,7 +52,7 @@ public sealed class Form1 : Form
                 $"LC = 2R sin(Δ/2)\r\n  = 2({r:N3}) sin({d / 2:N3}°)\r\n  = {chord:N3} m\r\n\r\n" +
                 $"E = R[sec(Δ/2) - 1]\r\n  = {r:N3}[1/cos({d / 2:N3}°) - 1]\r\n  = {external:N3} m\r\n\r\n" +
                 $"M = R[1 - cos(Δ/2)]\r\n  = {r:N3}[1 - cos({d / 2:N3}°)]\r\n  = {middleOrdinate:N3} m";
-        });
+        }, LoadEmbeddedImage("TransportationToolkit.Assets.HorizontalCurveGeometry.png"));
     }
 
     private TabPage VerticalPage()
@@ -151,7 +152,8 @@ public sealed class Form1 : Form
         });
     }
 
-    private TabPage Calculator(string title, string subtitle, (string label, TextBox input)[] fields, TextBox output, Action calculate)
+    private TabPage Calculator(string title, string subtitle, (string label, TextBox input)[] fields,
+        TextBox output, Action calculate, Image? referenceImage = null)
     {
         var page = new TabPage(title) { BackColor = BackColor, Padding = new Padding(20) };
         var split = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2 };
@@ -163,6 +165,18 @@ public sealed class Form1 : Form
         var button = new Button { Text = "Calculate", Height = 42, BackColor = blue, ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat, Margin = new Padding(3, 20, 3, 3), Dock = DockStyle.Top };
         button.FlatAppearance.BorderSize = 0; button.Click += (_, _) => calculate(); inputs.Controls.Add(button);
+        if (referenceImage is not null)
+        {
+            inputs.Controls.Add(new PictureBox
+            {
+                Image = referenceImage,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Dock = DockStyle.Top,
+                Height = 300,
+                Margin = new Padding(3, 24, 3, 3),
+                BackColor = Color.White
+            });
+        }
         var results = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(24), Margin = new Padding(8) };
         results.Controls.Add(output); results.Controls.Add(new Label { Text = "RESULTS", Dock = DockStyle.Top, Height = 45,
             Font = new Font("Segoe UI Semibold", 13F), ForeColor = navy });
@@ -179,6 +193,13 @@ public sealed class Form1 : Form
     private static TextBox Input(string text = "") => new() { Text = text, Width = 300, BorderStyle = BorderStyle.FixedSingle };
     private static TextBox Output() => new() { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true,
         BorderStyle = BorderStyle.None, Font = new Font("Consolas", 11F), ScrollBars = ScrollBars.Vertical };
+    private static Image LoadEmbeddedImage(string resourceName)
+    {
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)
+            ?? throw new InvalidOperationException($"Embedded image resource '{resourceName}' was not found.");
+        using var source = Image.FromStream(stream);
+        return new Bitmap(source);
+    }
     private static bool Read(TextBox box, string name, out double value)
     {
         if (double.TryParse(box.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) return true;
