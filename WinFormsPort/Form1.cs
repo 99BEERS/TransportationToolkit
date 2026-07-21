@@ -37,11 +37,19 @@ public sealed class Form1 : Form
         {
             if (!Positive(radius, "Radius", out var r) || !Range(delta, "Delta angle", 0, 180, out var d)) return;
             var angle = d / 2 * Math.PI / 180;
-            output.Text = $"Tangent length\t{r * Math.Tan(angle):N3} m\r\n" +
-                $"Curve length\t{Math.PI * r * d / 180:N3} m\r\n" +
-                $"Long chord\t{2 * r * Math.Sin(angle):N3} m\r\n" +
-                $"External distance\t{r * (1 / Math.Cos(angle) - 1):N3} m\r\n" +
-                $"Middle ordinate\t{r * (1 - Math.Cos(angle)):N3} m";
+            var tangent = r * Math.Tan(angle);
+            var curveLength = Math.PI * r * d / 180;
+            var chord = 2 * r * Math.Sin(angle);
+            var external = r * (1 / Math.Cos(angle) - 1);
+            var middleOrdinate = r * (1 - Math.Cos(angle));
+
+            output.Text = "FORMULAS AND SUBSTITUTION\r\n" +
+                $"Half-angle = Δ/2 = {d:N3}°/2 = {d / 2:N3}° = {angle:N6} rad\r\n\r\n" +
+                $"T = R tan(Δ/2)\r\n  = {r:N3} tan({d / 2:N3}°)\r\n  = {tangent:N3} m\r\n\r\n" +
+                $"L = πRΔ/180\r\n  = π({r:N3})({d:N3})/180\r\n  = {curveLength:N3} m\r\n\r\n" +
+                $"LC = 2R sin(Δ/2)\r\n  = 2({r:N3}) sin({d / 2:N3}°)\r\n  = {chord:N3} m\r\n\r\n" +
+                $"E = R[sec(Δ/2) - 1]\r\n  = {r:N3}[1/cos({d / 2:N3}°) - 1]\r\n  = {external:N3} m\r\n\r\n" +
+                $"M = R[1 - cos(Δ/2)]\r\n  = {r:N3}[1 - cos({d / 2:N3}°)]\r\n  = {middleOrdinate:N3} m";
         });
     }
 
@@ -58,16 +66,24 @@ public sealed class Form1 : Form
             var a = aPct / 100; var b = bPct / 100; var diff = b - a;
             var pvcSta = pviSta - l / 2; var pvtSta = pviSta + l / 2;
             var pvcElev = pviElev - a * l / 2; var pvtElev = pviElev + b * l / 2;
-            output.Text = $"Grade difference A\t{bPct - aPct:N3} %\r\n\r\n" +
-                $"PVC station\t{pvcSta:N3} m\r\nPVI station\t{pviSta:N3} m\r\nPVT station\t{pvtSta:N3} m\r\n\r\n" +
-                $"PVC elevation\t{pvcElev:N3} m\r\nPVI elevation\t{pviElev:N3} m\r\nPVT elevation\t{pvtElev:N3} m";
+            output.Text = "FORMULAS AND SUBSTITUTION\r\n" +
+                $"g1 = {aPct:N3}/100 = {a:N6}\r\ng2 = {bPct:N3}/100 = {b:N6}\r\n" +
+                $"A = g2 - g1 = {b:N6} - ({a:N6}) = {diff:N6} ({bPct - aPct:N3}%)\r\n\r\n" +
+                $"PVC station = PVI - L/2\r\n  = {pviSta:N3} - {l:N3}/2 = {pvcSta:N3} m\r\n\r\n" +
+                $"PVT station = PVI + L/2\r\n  = {pviSta:N3} + {l:N3}/2 = {pvtSta:N3} m\r\n\r\n" +
+                $"PVC elevation = PVI elevation - g1(L/2)\r\n  = {pviElev:N3} - ({a:N6})({l:N3}/2) = {pvcElev:N3} m\r\n\r\n" +
+                $"PVT elevation = PVI elevation + g2(L/2)\r\n  = {pviElev:N3} + ({b:N6})({l:N3}/2) = {pvtElev:N3} m";
             if (Math.Abs(diff) > 0.0000001 && -a * l / diff is var distance && distance >= 0 && distance <= l)
             {
                 var pointElev = pvcElev + a * distance + diff * distance * distance / (2 * l);
-                output.Text += $"\r\n\r\n{(diff < 0 ? "High point" : "Low point")}\r\n" +
-                    $"Distance from PVC\t{distance:N3} m\r\nStation\t{pvcSta + distance:N3} m\r\nElevation\t{pointElev:N3} m";
+                output.Text += $"\r\n\r\n{(diff < 0 ? "HIGH POINT" : "LOW POINT")}\r\n" +
+                    $"x = -g1L/A\r\n  = -({a:N6})({l:N3})/({diff:N6}) = {distance:N3} m from PVC\r\n" +
+                    $"Station = {pvcSta:N3} + {distance:N3} = {pvcSta + distance:N3} m\r\n\r\n" +
+                    $"Elevation = E(PVC) + g1x + Ax²/(2L)\r\n" +
+                    $"  = {pvcElev:N3} + ({a:N6})({distance:N3}) + ({diff:N6})({distance:N3})²/[2({l:N3})]\r\n" +
+                    $"  = {pointElev:N3} m";
             }
-            else output.Text += "\r\n\r\nNo high or low point occurs within the curve.";
+            else output.Text += "\r\n\r\nHIGH/LOW POINT CHECK\r\nNo high or low point occurs within the curve.";
         });
     }
 
@@ -80,7 +96,12 @@ public sealed class Form1 : Form
             if (!Positive(speed, "Design speed", out var s) || !Positive(radius, "Radius", out var r) ||
                 !Read(friction, "Side friction factor", out var f)) return;
             var rate = s * s / (127 * r) - f;
-            output.Text = $"Superelevation rate\t{rate:N3}\r\nSuperelevation\t{rate * 100:N3} %";
+            output.Text = "FORMULA AND SUBSTITUTION\r\n" +
+                "e = V²/(127R) - f\r\n" +
+                $"  = {s:N3}²/[127({r:N3})] - {f:N3}\r\n" +
+                $"  = {s * s:N3}/{127 * r:N3} - {f:N3}\r\n" +
+                $"  = {rate:N3}\r\n\r\n" +
+                $"Superelevation = e × 100 = {rate:N3} × 100 = {rate * 100:N3}%";
         });
     }
 
